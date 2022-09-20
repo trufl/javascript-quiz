@@ -106,7 +106,3 @@ main,
     background-color: rgb(255,255,255);
     color: rgb(229, 95, 32);
 }
-
-#scores-list li:nth-child(even) {
-    background-color: rgb(29, 17, 96);
-}
