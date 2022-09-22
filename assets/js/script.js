@@ -5,6 +5,8 @@ const $buttonsSection = $('#buttons-section');
 const $scoresList = $('#scores-list');
 const $backButton = $('#go-back');
 const $clearButton = $('#clear-scores');
+const $questionHeading = $('<h2>');
+const questionsAsked = [];
 let highscores = [];
 let score = 0;
 let timeLeft = 0;
@@ -218,24 +220,28 @@ function init() {
     const $welcomeHeading = $('<h1>');
     const $welcomeMsg = $('<p>');
     const $startButton = $('<button>');
+    const $startTime = $('<p>');
 
     $welcomeHeading.text("Welcome to the JavaScript quiz!");
     $welcomeMsg.text(`
     Try to answer the following code-related questions within the time limit. Keep in mind that
     incorrect answers will penalize your score/time by ten seconds!
     `);
-    $startButton.text("Start Quiz")
+    $startButton.text("Start Quiz");
+    $startTime.text(`Time: ${timeLeft}`);
 
     $welcomeMsg.addClass('welcome-text');
 
     $quizQuestionArea.append($welcomeHeading);
     $quizAnswersArea.append($welcomeMsg);
     $buttonsSection.append($startButton);
+    $timeDisplayArea.append($startTime)
 
     $startButton.on('click',function() {
         $welcomeHeading.remove();
         $welcomeMsg.remove();
         $startButton.remove();
+        $startTime.remove();
 
         startQuiz();
     });
@@ -243,6 +249,46 @@ function init() {
 
  init();
 
+ const $test = $('<button>');
+ $test.text('next');
+
  function startQuiz() {
-    console.log("Hello World");
+
+    if(questionsAsked.length < 8) {
+
+        let index = Math.floor(Math.random() * (quizQuestions.length - 1)) + 0;
+
+        if(!questionsAsked.includes(quizQuestions[index].question)){
+            questionsAsked.push(quizQuestions[index].question);
+            $questionHeading.remove();
+            $test.remove();
+                displayQuiz(quizQuestions[index]);
+        } else {
+            startQuiz();
+        }
+    } else if(questionsAsked.length === 8) {
+        questionsAsked.push(quizQuestions[8].question);
+        $questionHeading.remove();
+        $test.remove();
+        displayQuiz(quizQuestions[8])
+    } else {
+        stopQuiz();
+    }
+
+ }
+
+ function displayQuiz(questionObj) {
+    $questionHeading.text(questionObj.question);
+    $quizQuestionArea.append($questionHeading);
+    $buttonsSection.append($test);
+    //if(questionObj.question !== "Bonus Question: Who is better?") {
+        $test.on('click', startQuiz)
+    //} else {
+    //    stopQuiz();
+    //}
+ }
+
+ function stopQuiz() {
+    $questionHeading.remove();
+    $test.remove();
  }

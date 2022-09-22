@@ -114,6 +114,10 @@ main,
     flex-direction: row;
 }
 
+.row-3 {
+    width: 33%;
+}
+
 .welcome-text {
     margin-bottom: 2em;
     padding: 1em;
