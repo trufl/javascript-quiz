@@ -52,7 +52,7 @@ main,
 #quiz-question,
 #scores-heading {
     text-align: center;
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
     font-size: 35px;
     color: rgb(229, 95, 32);
 }
@@ -76,10 +76,12 @@ main,
     color: rgb(255,255,255);
     font-size: 18px;
     border-radius: 50px;
+    width: 100%;
 }
 
-#quiz-answers ul li button {
-    border: none;
+#quiz-answers ul li:hover {
+    color: rgb(229, 95, 32);
+    cursor: pointer;
 }
 
 #buttons-section,
@@ -105,4 +107,31 @@ main,
 #scores-list li:nth-child(odd) {
     background-color: rgb(255,255,255);
     color: rgb(229, 95, 32);
+}
+
+.row {
+    display: flex;
+    flex: 1 0 100%;
+    flex-wrap: wrap;
+    flex-direction: row;
+    text-align: left;
+}
+
+.welcome-text {
+    margin-bottom: 2em;
+    padding: 1em;
+    color: rgb(229, 95, 32);
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.end-text {
+    margin: 0 0 3.5em;
+    color: rgb(229, 95, 32);
+    font-size: 18px;
+}
+
+.custom-spacing {
+    padding: 0;
+    margin: 0;
 }
