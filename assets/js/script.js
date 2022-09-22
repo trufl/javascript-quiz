@@ -6,9 +6,10 @@ const $scoresList = $('#scores-list');
 const $backButton = $('#go-back');
 const $clearButton = $('#clear-scores');
 const questionsAsked = [];
-let highscores = [];
+const highscores = [];
 let score = 0;
 let timeLeft = 0;
+let timerInterval;
 
 const quizQuestions = [
     question1 = {
@@ -229,39 +230,71 @@ function init() {
         $startButton.remove();
         $startTime.remove();
 
+        startTimer();
         startQuiz();
     });
 }
 
  init();
 
+function refreshDisplay() {
+    $quizQuestionArea.children().remove();
+    $quizAnswersArea.children().remove();
+}
 
+function startTimer() {
+    const $timer = $('<p>');
+    timeLeft = 60;
+
+    $timer.text(`Time: ${timeLeft}`);
+    $timeDisplayArea.append($timer);
+
+    timerInterval = setInterval(function() {
+        timeLeft--;
+        $timer.text(`Time: ${timeLeft}`);
+
+        if(timeLeft === 0) {
+             clearInterval(timerInterval);
+             stopQuiz();
+        }
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+}
 
  function startQuiz() {
+    
+    if(timeLeft > 0) {
+        if(questionsAsked.length < 8) {
 
-    if(questionsAsked.length < 8) {
+            let index = Math.floor(Math.random() * (quizQuestions.length - 1)) + 0;
 
-        let index = Math.floor(Math.random() * (quizQuestions.length - 1)) + 0;
+            if(!questionsAsked.includes(quizQuestions[index].question)){
 
-        if(!questionsAsked.includes(quizQuestions[index].question)){
+                questionsAsked.push(quizQuestions[index].question);
+                refreshDisplay();
+                displayQuiz(quizQuestions[index]);
 
-            questionsAsked.push(quizQuestions[index].question);
-            $quizQuestionArea.children().remove();
-            $quizAnswersArea.children().remove();
-            displayQuiz(quizQuestions[index]);
+            } else {
+                startQuiz();
+            }
+
+        } else if(questionsAsked.length === 8) {
+
+            questionsAsked.push(quizQuestions[8].question);
+            refreshDisplay();
+            displayQuiz(quizQuestions[8])
 
         } else {
-            startQuiz();
+            stopQuiz();
         }
-
-    } else if(questionsAsked.length === 8) {
-
-        questionsAsked.push(quizQuestions[8].question);
-        $quizQuestionArea.children().remove();
-        $quizAnswersArea.children().remove();
-        displayQuiz(quizQuestions[8])
-
     } else {
+        if(timeLeft < 0) {
+            timeLeft = 0;
+        }
+        stopTimer();
         stopQuiz();
     }
 
@@ -291,44 +324,58 @@ function init() {
     } while (listedAnswers.length <= 4);
 
 
-    $questionsList.on('click', '.true', startQuiz);
+    $questionsList.on('click', '.true', function() {
+
+        if(questionObj.question === "Bonus Question: Who is better?") {
+            score += 3.5;
+        } else {
+            score += 2.5;
+        }
+
+        startQuiz();
+    });
+
+    $questionsList.on('click', '.false', function() {
+        score -= 1;
+
+        if(timeLeft > 0) {
+            timeLeft -= 10;
+        }
+
+        startQuiz();
+    });
  }
 
  function stopQuiz() {
-    $quizQuestionArea.children().remove();
-    $quizAnswersArea.children().remove();
+    const $endHeader = $('<h2>');
+    const $endMsg = $('<p>');
+    const $endForm = $('<div>');
+
+    if(timeLeft > 0) {
+        let newScore = timeLeft * .5;
+        score += newScore;
+    }
+    
+    $endHeader.text("All done!");
+    $endMsg.text(`Your final score is: ${score}`);
+
+    $endMsg.addClass('end-text')
+    $endForm.addClass('row')
+    $endForm.append(`
+    <label class="end-text custom-spacing">Enter initials: </label> 
+    `);
+    $endForm.append(`
+    <input type="text"/>
+    `);
+    $endForm.append(`
+    <button type="submit" value="Submit">Submit</button>
+    `);
+
+    refreshDisplay();
+    stopTimer();
+
+    $timeDisplayArea.children().text(`Time: ${timeLeft}`);
+    $quizQuestionArea.append($endHeader);
+    $quizAnswersArea.append($endMsg);
+    $buttonsSection.append($endForm);
  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// function getQuestion(obj) {
-//     return obj.question;
-// }
-
-// function getCorrectAnswer(obj) {
-//     for(let x = 0; x < obj.answers.length; x++){
-//         if(obj.answers[x].isTrue){
-//             return obj.answers[x].answer;
-//         }
-//     }
-//  }
