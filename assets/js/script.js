@@ -6,7 +6,8 @@ const $scoresList = $('#scores-list');
 const $backButton = $('#go-back');
 const $clearButton = $('#clear-scores');
 const questionsAsked = [];
-const highscores = [];
+let highscores = [];
+let highscoresCount = 0;
 let score = 0;
 let timeLeft = 0;
 let timerInterval;
@@ -224,6 +225,15 @@ function init() {
     $buttonsSection.append($startButton);
     $timeDisplayArea.append($startTime)
 
+    // if(localStorage.getItem("highscoresArray") != undefined && highscores === undefined) {
+    //     highscores = JSON.parse(localStorage.getItem('highscoresArray'));
+    // } else if (highscores !== undefined && localStorage.getItem('highscoresArray') == undefined) {
+    //     localStorage.setItem('highscoresArray', JSON.stringify(highscores));
+    // } else if (highscores == undefined && localStorage.getItem('highscoresArray') == undefined) {
+    //     highscores = [];
+    //     console.log("test")
+    // }
+
     $startButton.on('click',function() {
         $welcomeHeading.remove();
         $welcomeMsg.remove();
@@ -264,7 +274,7 @@ function stopTimer() {
     clearInterval(timerInterval);
 }
 
- function startQuiz() {
+function startQuiz() {
     
     if(timeLeft > 0) {
         if(questionsAsked.length < 8) {
@@ -298,9 +308,9 @@ function stopTimer() {
         stopQuiz();
     }
 
- }
+}
 
- function displayQuiz(questionObj) {
+function displayQuiz(questionObj) {
     const $questionHeading = $('<h2>');
     const $questionsList = $('<ul>');
     const listedAnswers = ['nope'];
@@ -344,12 +354,15 @@ function stopTimer() {
 
         startQuiz();
     });
- }
+}
 
- function stopQuiz() {
+function stopQuiz() {
     const $endHeader = $('<h2>');
     const $endMsg = $('<p>');
-    const $endForm = $('<div>');
+    const $endForm = $('<form>');
+    const $endLabel = $('<label>');
+    const $endInput = $('<input>');
+    const $endButton = $('<button>');
 
     if(timeLeft > 0) {
         let newScore = timeLeft * .5;
@@ -358,18 +371,22 @@ function stopTimer() {
     
     $endHeader.text("All done!");
     $endMsg.text(`Your final score is: ${score}`);
+    $endLabel.text("Enter initials: ");
+    $endButton.text("Submit");
 
-    $endMsg.addClass('end-text')
-    $endForm.addClass('row')
-    $endForm.append(`
-    <label class="end-text custom-spacing">Enter initials: </label> 
-    `);
-    $endForm.append(`
-    <input type="text"/>
-    `);
-    $endForm.append(`
-    <button type="submit" value="Submit">Submit</button>
-    `);
+
+    $endMsg.addClass('end-text');
+    $endForm.addClass('row');
+    $endLabel.addClass('end-text custom-spacing');
+    $endInput.attr('id', 'initial');
+    $endInput.attr('type', "text");
+    $endButton.attr('type', "submit");
+    $endButton.attr('value', "Submit");
+    $endButton.addClass("submit");
+
+    $endForm.append($endLabel);
+    $endForm.append($endInput);
+    $endForm.append($endButton);
 
     refreshDisplay();
     stopTimer();
@@ -378,4 +395,26 @@ function stopTimer() {
     $quizQuestionArea.append($endHeader);
     $quizAnswersArea.append($endMsg);
     $buttonsSection.append($endForm);
- }
+
+    $endForm.on('submit', handleSubmit);
+}
+
+function handleSubmit(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    console.log('hello')
+
+    const $submitButton = $('#initial');
+    let nameIn = $submitButton.val().trim();
+
+    highscores[highscoresCount] = {
+        initial: nameIn,
+        scoreNum: score, 
+    }
+    highscoresCount++;
+
+    highscores = highscores.sort();
+
+    localStorage.setItem('highscoresArray', JSON.stringify(highscores));
+}
