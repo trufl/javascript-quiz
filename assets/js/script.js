@@ -420,7 +420,7 @@ function displayScores() {
     if(highscores.length > 0) {
         for(let x = 0; x < highscores.length; x++) {
             let scoreItem = $('<li>');
-            scoreItem.text(`${x + 1}. ${highscores[x].initial} - ${highscores[x].scoreNum}`)
+            scoreItem.text(`${x + 1}.   ${highscores[x].initial.toUpperCase()} - ${highscores[x].scoreNum}`)
             $scoresList.append(scoreItem);
         }
     }
