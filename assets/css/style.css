@@ -52,7 +52,7 @@ main,
 #quiz-question,
 #scores-heading {
     text-align: center;
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
     font-size: 35px;
     color: rgb(229, 95, 32);
 }
@@ -76,10 +76,12 @@ main,
     color: rgb(255,255,255);
     font-size: 18px;
     border-radius: 50px;
+    width: 100%;
 }
 
-#quiz-answers ul li button {
-    border: none;
+#quiz-answers ul li:hover {
+    color: rgb(229, 95, 32);
+    cursor: pointer;
 }
 
 #buttons-section,

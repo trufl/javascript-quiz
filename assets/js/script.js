@@ -5,7 +5,6 @@ const $buttonsSection = $('#buttons-section');
 const $scoresList = $('#scores-list');
 const $backButton = $('#go-back');
 const $clearButton = $('#clear-scores');
-const $questionHeading = $('<h2>');
 const questionsAsked = [];
 let highscores = [];
 let score = 0;
@@ -175,7 +174,7 @@ const quizQuestions = [
                     isTrue: false,
                 },
                 answer4 = {
-                    answer: "",
+                    answer: "let",
                     isTrue: false,
                 },
         ],
@@ -202,19 +201,6 @@ const quizQuestions = [
         ],
     },
 ];
-
-
-// function getQuestion(obj) {
-//     return obj.question;
-// }
-
-// function getCorrectAnswer(obj) {
-//     for(let x = 0; x < obj.answers.length; x++){
-//         if(obj.answers[x].isTrue){
-//             return obj.answers[x].answer;
-//         }
-//     }
-//  }
 
 function init() {
     const $welcomeHeading = $('<h1>');
@@ -249,8 +235,7 @@ function init() {
 
  init();
 
- const $test = $('<button>');
- $test.text('next');
+
 
  function startQuiz() {
 
@@ -259,18 +244,23 @@ function init() {
         let index = Math.floor(Math.random() * (quizQuestions.length - 1)) + 0;
 
         if(!questionsAsked.includes(quizQuestions[index].question)){
+
             questionsAsked.push(quizQuestions[index].question);
-            $questionHeading.remove();
-            $test.remove();
-                displayQuiz(quizQuestions[index]);
+            $quizQuestionArea.children().remove();
+            $quizAnswersArea.children().remove();
+            displayQuiz(quizQuestions[index]);
+
         } else {
             startQuiz();
         }
+
     } else if(questionsAsked.length === 8) {
+
         questionsAsked.push(quizQuestions[8].question);
-        $questionHeading.remove();
-        $test.remove();
+        $quizQuestionArea.children().remove();
+        $quizAnswersArea.children().remove();
         displayQuiz(quizQuestions[8])
+
     } else {
         stopQuiz();
     }
@@ -278,17 +268,67 @@ function init() {
  }
 
  function displayQuiz(questionObj) {
+    const $questionHeading = $('<h2>');
+    const $questionsList = $('<ul>');
+    const listedAnswers = ['nope'];
+    let index = Math.floor(Math.random() * questionObj.answers.length) + 0;
+
     $questionHeading.text(questionObj.question);
+
     $quizQuestionArea.append($questionHeading);
-    $buttonsSection.append($test);
-    //if(questionObj.question !== "Bonus Question: Who is better?") {
-        $test.on('click', startQuiz)
-    //} else {
-    //    stopQuiz();
-    //}
+    $quizAnswersArea.append($questionsList);
+
+    do {
+        if(!listedAnswers.includes(questionObj.answers[index].answer)) {
+            listedAnswers.push(questionObj.answers[index].answer);
+            const $answerItem = $('<li>');
+            $answerItem.text(questionObj.answers[index].answer);
+            $answerItem.addClass(`${questionObj.answers[index].isTrue}`);
+            $questionsList.append($answerItem);
+        }
+
+        index = Math.floor(Math.random() * questionObj.answers.length) + 0;
+    } while (listedAnswers.length <= 4);
+
+
+    $questionsList.on('click', '.true', startQuiz);
  }
 
  function stopQuiz() {
-    $questionHeading.remove();
-    $test.remove();
+    $quizQuestionArea.children().remove();
+    $quizAnswersArea.children().remove();
  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function getQuestion(obj) {
+//     return obj.question;
+// }
+
+// function getCorrectAnswer(obj) {
+//     for(let x = 0; x < obj.answers.length; x++){
+//         if(obj.answers[x].isTrue){
+//             return obj.answers[x].answer;
+//         }
+//     }
+//  }
