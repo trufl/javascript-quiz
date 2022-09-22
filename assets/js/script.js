@@ -225,14 +225,10 @@ function init() {
     $buttonsSection.append($startButton);
     $timeDisplayArea.append($startTime)
 
-    // if(localStorage.getItem("highscoresArray") != undefined && highscores === undefined) {
-    //     highscores = JSON.parse(localStorage.getItem('highscoresArray'));
-    // } else if (highscores !== undefined && localStorage.getItem('highscoresArray') == undefined) {
-    //     localStorage.setItem('highscoresArray', JSON.stringify(highscores));
-    // } else if (highscores == undefined && localStorage.getItem('highscoresArray') == undefined) {
-    //     highscores = [];
-    //     console.log("test")
-    // }
+    if(localStorage.getItem("highscoresArray") !== null) {
+        highscores = JSON.parse(localStorage.getItem('highscoresArray'));
+        highscoresCount = highscores.length;
+    }
 
     $startButton.on('click',function() {
         $welcomeHeading.remove();
@@ -417,4 +413,27 @@ function handleSubmit(event) {
     highscores = highscores.sort();
 
     localStorage.setItem('highscoresArray', JSON.stringify(highscores));
+    window.location.replace("assets/html/highscores.html");
 }
+
+function displayScores() {
+    if(highscores.length > 0) {
+        for(let x = 0; x < highscores.length; x++) {
+            let scoreItem = $('<li>');
+            scoreItem.text(`${x + 1}. ${highscores[x].initial} - ${highscores[x].scoreNum}`)
+            $scoresList.append(scoreItem);
+        }
+    }
+
+}
+
+displayScores();
+
+$backButton.on('click', function() {
+    window.location.href = "https://trufl.github.io/javascript-quiz/";
+});
+
+$clearButton.on('click', function() {
+    localStorage.removeItem('highscoresArray');
+    $scoresList.children().remove();
+})
