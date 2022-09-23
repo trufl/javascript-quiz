@@ -342,7 +342,9 @@ function displayQuiz(questionObj) {
     });
 
     $questionsList.on('click', '.false', function() {
-        score -= 1;
+        if(questionObj.question !== "Bonus Question: Who is better?") {
+            score -= 1.5;
+        }
 
         if(timeLeft > 0) {
             timeLeft -= 10;
